@@ -3,7 +3,7 @@ const Post = require('../models/post');
 const commentsMailer = require('../mailers/comments_mailer');
 const queue = require('../config/kue');
 const commentEmailWorker = require('../workers/comment_email_worker');
-
+const Like = require('../models/like');
 
 module.exports.create = async function (req, res) {
     try {
@@ -66,6 +66,9 @@ module.exports.destroy = async function (req, res) {
                 { new: true } // Return the modified post
             );
 
+            // CHANGE :: destroy the associated likes for this comment
+            await Like.deleteMany({likeable: comment._id, onModel: 'Comment'});
+            
             // Delete the comment itself
             await comment.deleteOne();
             // send the comment id which was deleted back to the views

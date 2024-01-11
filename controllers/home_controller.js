@@ -1,22 +1,27 @@
 const Post = require('../models/post');
 const User = require('../models/user');
-
+const Like = require('../models/like');
 
 //using Async await
 module.exports.home = async function(request,response){
     
     try{
         //await 1
-        //populate the user of each post
+        // CHANGE :: populate the likes of each post and comment
         let posts = await Post.find({})
         .sort('-createdAt')
-        .populate("user")
+        .populate('user')
         .populate({
-            path : 'comments',
-            populate : {
-                path : 'user'
+            path: 'comments',
+            populate: {
+                path: 'user'
+            },
+            populate: {
+                path: 'likes'
             }
-        });
+        }).populate('comments')
+        .populate('likes');
+
         //await 2
         let users = await User.find({});
 
