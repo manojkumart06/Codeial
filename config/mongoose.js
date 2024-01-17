@@ -1,8 +1,9 @@
 // Import the mongoose library
 const mongoose = require('mongoose');
+const env = require('./environment');
 
 // Connect to the MongoDB database named 'codeial_development' on the local machine
-mongoose.connect('mongodb://localhost/codeial_development');
+mongoose.connect(`mongodb://localhost/${env.db}`);
 //mongoose.connect('mongodb://localhost/codeial_development', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Access the mongoose connection object

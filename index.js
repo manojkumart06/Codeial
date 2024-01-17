@@ -2,6 +2,11 @@
 const express = require('express');
 const app = express();
 const port = 8000;
+
+const env = require('./config/environment');
+const logger = require('morgan');
+const path = require('path');
+
 const expressLayouts = require('express-ejs-layouts');
 const db = require('./config/mongoose');
 const cookieParser = require('cookie-parser');
@@ -24,21 +29,22 @@ const sassMiddleware = require('node-sass-middleware');
 const flash = require('connect-flash');
 const customMware = require('./config/middleware');
 
-app.use(sassMiddleware({
-    src : './assets/scss',
-    dest : './assets/css',
-    debug : true,
-    outputStyle : 'extended',
-    prefix : "/css"
-}));
-
+if(env.name=='development'){
+    app.use(sassMiddleware({
+        src : path.join(__dirname,env.asset_path,'/scss'),
+        dest : path.join(__dirname,env.asset_path,'/css'),
+        debug : true,
+        outputStyle : 'extended',
+        prefix : "/css"
+    }));
+}
 //app.use(express.urlencoded());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
 //accessing static files by using static function 
-app.use(express.static('./assets'));
+app.use(express.static(env.asset_path));
 
 //make the uploads path available to the browser
 app.use('/uploads',express.static(__dirname + '/uploads'));
@@ -58,7 +64,7 @@ app.set('views','./views');
 //mongo store is used to store the session cookie in the DB
 app.use(session({
     name: 'Codeial',
-    secret: 'something',
+    secret: env.session_cookie_key,
     saveUninitialized: false,
     resave: false,
     cookie: {
