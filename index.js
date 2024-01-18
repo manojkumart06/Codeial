@@ -1,6 +1,7 @@
 //main code
 const express = require('express');
 const app = express();
+require('./config/view-helper')(app);
 const port = 8000;
 
 const env = require('./config/environment');
