@@ -1,4 +1,3 @@
-//main code
 const express = require('express');
 const app = express();
 require('./config/view-helper')(app);
